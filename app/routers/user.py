@@ -17,13 +17,15 @@ settings = get_app_settings()
 
 router = APIRouter(tags=["Security"])
 
+
 def create_token(username: str) -> Token:
-        access_token_expires = timedelta(minutes=settings.jwt_token_expiration_minutes)
-        access_token = create_access_token(
-            data={"sub": username}, expires_delta=access_token_expires
-        )
-        token = Token(access_token=access_token, token_type="bearer")
-        return token
+    access_token_expires = timedelta(minutes=settings.jwt_token_expiration_minutes)
+    access_token = create_access_token(
+        data={"sub": username}, expires_delta=access_token_expires
+    )
+    token = Token(access_token=access_token, token_type="bearer")
+    return token
+
 
 @router.post("/token")
 async def get_token(session: DBSession, form_data: FormData):
@@ -44,8 +46,11 @@ async def get_token(session: DBSession, form_data: FormData):
 
 
 @router.get("/users/me")
-async def get_user_me(current_user: UserDep):
-    user_public = UserPublic.model_validate(current_user)
+async def get_user_me(session: DBSession, current_user: UserDep):
+    db_user = await UserRepository.get_user_by_username(
+        session=session, username=current_user
+    )
+    user_public = UserPublic.model_validate(db_user)
     return user_public
 
 

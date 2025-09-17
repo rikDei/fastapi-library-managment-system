@@ -23,7 +23,7 @@ def get_password_hash(password: str) -> str:
 def authenticate_user(db_user: User | None, password: str):
     if not db_user:
         return False
-    if not verify_password(password, User.hashed_password):
+    if not verify_password(password, db_user.hashed_password):
         return False
     return db_user
 

@@ -3,8 +3,8 @@ from sqlmodel import Field, SQLModel
 
 
 class UserBase(SQLModel):
-    username: str = Field(nullable=False)
-    email: EmailStr = Field(nullable=False)
+    username: str = Field(nullable=False, unique=True)
+    email: EmailStr = Field(nullable=False, unique=True)
 
 
 class User(UserBase, table=True):

@@ -4,9 +4,9 @@ from sqlmodel import Field, SQLModel
 
 
 class BookBase(SQLModel):
-    isbn_code: str = Field(nullable=False)
-    title: str = Field(index=True)
-    author: str = Field(index=True)
+    isbn_code: str = Field(index=True, nullable=False)
+    title: str = Field(index=True, nullable=False)
+    author: str = Field(nullable=False)
     publication_year: date = Field(nullable=False)
     genre: str = Field(nullable=True)
 
