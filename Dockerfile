@@ -8,4 +8,4 @@ COPY /database /database
 RUN apt-get update && apt-get install -y curl
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
-CMD ["python", "your_script.py"]
+CMD ["python", "-m", "fastapi", "dev", "app"]
