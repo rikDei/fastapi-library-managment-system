@@ -1,23 +1,24 @@
 from datetime import datetime, timedelta, timezone
 
+import bcrypt
 import jwt
-from app.core.config import get_app_settings
-from passlib.context import CryptContext
 from pydantic import BaseModel, Field
 
+from app.core.config import get_app_settings
 from app.models.user import User
 
 settings = get_app_settings()
 
-pwd_context = CryptContext(schemes=["bcrypt"])
-
 
 def verify_password(plain_password: str, hashed_password: str):
-    return pwd_context.verify(secret=plain_password, hash=hashed_password)
+    return bcrypt.checkpw(
+        password=plain_password.encode("utf-8"),
+        hashed_password=hashed_password.encode("utf-8"),
+    )
 
 
 def get_password_hash(password: str) -> str:
-    return pwd_context.hash(password)
+    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
 
 def authenticate_user(db_user: User | None, password: str):
