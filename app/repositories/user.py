@@ -6,7 +6,7 @@ from app.models.user import User
 
 class UserRepository:
     @staticmethod
-    async def get_user_by_username(session: AsyncSession, username):
+    async def get_user_by_username(session: AsyncSession, username: str):
         stmt = select(User).where(User.username == username)
         res = await session.scalar(stmt)
         return res

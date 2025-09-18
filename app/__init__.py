@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.settings.app import AppSettings
-from app.routers import book, user
+from app.routers import book, loan, user
 
 app_settings = AppSettings()
 app = FastAPI(
@@ -30,3 +30,4 @@ app.add_middleware(
 )
 app.include_router(book.router)
 app.include_router(user.router)
+app.include_router(loan.router)

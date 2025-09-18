@@ -12,7 +12,7 @@ class User(UserBase, table=True):
     hashed_password: str = Field(nullable=False)
 
 class UserPublic(UserBase):
-    pass
+    id: int
 
 
 class UserCreate(UserBase):

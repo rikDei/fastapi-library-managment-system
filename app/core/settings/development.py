@@ -1,9 +1,7 @@
-from sqlalchemy.engine.url import URL
-
-
 import logging
 
 from pydantic import computed_field
+from sqlalchemy.engine.url import URL
 
 from app.core.settings.app import AppSettings
 

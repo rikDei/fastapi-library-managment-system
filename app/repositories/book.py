@@ -40,7 +40,7 @@ class BookRepository:
         return None
 
     @staticmethod
-    async def lend_book(session: AsyncSession, book_id: int, num_copies_lent: int):
+    async def lend_book(session: AsyncSession, book_id: int):
         book = await session.get(Book, book_id)
         if not book:
             raise HTTPException(
@@ -52,7 +52,7 @@ class BookRepository:
                 status_code=status.HTTP_404_NOT_FOUND, detail="No available copies"
             )
         else:
-            new_copies = available_copies - num_copies_lent
+            new_copies = available_copies - 1
             if new_copies < 0:
                 raise HTTPException(
                     status_code=status.HTTP_403_FORBIDDEN,
@@ -63,7 +63,7 @@ class BookRepository:
         return None
 
     @staticmethod
-    async def return_book(session: AsyncSession, book_id: int, num_copies_returned: int):
+    async def return_book(session: AsyncSession, book_id: int):
         book = await session.get(Book, book_id)
         if not book:
             raise HTTPException(
@@ -71,7 +71,7 @@ class BookRepository:
             )
         available_copies = int(book.available_copies)
         total_copies = int(book.total_copies)
-        new_copies = available_copies + num_copies_returned
+        new_copies = available_copies + 1
         if new_copies > total_copies:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,

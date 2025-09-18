@@ -48,7 +48,7 @@ async def get_token(session: DBSession, form_data: FormData):
 @router.get("/users/me")
 async def get_user_me(session: DBSession, current_user: UserDep):
     db_user = await UserRepository.get_user_by_username(
-        session=session, username=current_user
+        session=session, username=current_user.username
     )
     user_public = UserPublic.model_validate(db_user)
     return user_public

@@ -48,4 +48,4 @@ def create_access_token(
 
 
 class TokenData(BaseModel):
-    username: str | None = None
+    username: str

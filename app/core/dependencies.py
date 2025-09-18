@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import get_app_settings
 from app.core.container import container
 from app.core.security import TokenData
-from app.models.user import User
+from app.models.user import User, UserPublic
 from app.repositories.user import UserRepository
 
 settings = get_app_settings()
@@ -22,7 +22,7 @@ FormData = Annotated[OAuth2PasswordRequestForm, Depends()]
 
 async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)], session: DBSession
-):
+) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -32,18 +32,25 @@ async def get_current_user(
         payload = jwt.decode(
             token, settings.jwt_secret_key, algorithms=[settings.jwt_algorithm]
         )
-        username = payload.get("sub")
-        if username is None:
+        username = payload.get("sub", None)
+        if not username:
             raise credentials_exception
         token_data = TokenData(username=username)
+        user = await UserRepository.get_user_by_username(
+            session=session, username=token_data.username
+        )
+        if not user:
+            raise credentials_exception
+        return user
     except jwt.InvalidTokenError:
         raise credentials_exception
-    user = await UserRepository.get_user_by_username(
-        session=session, username=token_data.username
-    )
-    if user is None:
-        raise credentials_exception
-    return token_data.username
 
 
 UserDep = Annotated[User, Depends(get_current_user)]
+
+
+async def get_current_public_user(current_user: UserDep) -> UserPublic:
+    return UserPublic.model_validate(current_user)
+
+
+UserPubDep = Annotated[UserPublic, Depends(get_current_public_user)]

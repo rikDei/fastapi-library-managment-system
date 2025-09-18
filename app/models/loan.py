@@ -4,8 +4,6 @@ from sqlmodel import Field, SQLModel
 
 
 class LoanBase(SQLModel):
-    book_id: int = Field(nullable=False, foreign_key="book.id")
-    user_id: int = Field(nullable=False, foreign_key="user.id")
     loan_date: date = Field(
         nullable=False,
         default=date.today(),
@@ -23,10 +21,14 @@ class LoanBase(SQLModel):
 
 class Loan(LoanBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
+    book_id: int = Field(nullable=False, foreign_key="book.id")
+    user_id: int = Field(nullable=False, foreign_key="user.id")
 
 
 class LoanPublic(LoanBase):
-    pass
+    id: int
+    title: str
+    
 
 
 class LoanCreate(LoanBase):
